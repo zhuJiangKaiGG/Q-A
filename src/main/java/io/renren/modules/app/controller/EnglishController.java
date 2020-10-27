@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.renren.modules.app.entity.EnglishEntity;
 import io.renren.modules.app.service.EnglishService;
@@ -72,8 +73,12 @@ public class EnglishController {
     public R batchSave(@RequestBody EnglishEntity[] englishes){
         for (EnglishEntity english : englishes) {
             english.setCreateTime(new Date());
+            System.out.println(english.getName());
         }
-        englishService.batchSave(englishes);
+        //过滤空值
+        List<EnglishEntity> collect = Arrays.stream(englishes).filter(englishEntity -> englishEntity.getName() != "").collect(Collectors.toList());
+        EnglishEntity[] englishEntities = collect.toArray(new EnglishEntity[collect.size()]);
+        englishService.batchSave(englishEntities);
 
         return R.ok();
     }
